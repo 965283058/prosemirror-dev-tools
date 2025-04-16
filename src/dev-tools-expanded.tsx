@@ -8,18 +8,14 @@ import {
   devToolTabIndexAtom,
 } from "./state/global";
 import StateTab from "./tabs/state";
-import HistoryTab from "./tabs/history";
 import SchemaTab from "./tabs/schema";
 import PluginsTab from "./tabs/plugins";
 import StructureTab from "./tabs/structure";
-import SnapshotsTab from "./tabs/snapshots";
 import CSSReset from "./components/css-reset";
 import { NodePicker, NodePickerTrigger } from "./components/node-picker";
-import SaveSnapshotButton from "./components/save-snapshot-button";
 import theme from "./theme";
 import { useAtom, useAtomValue } from "jotai";
 import { useNodePicker } from "./state/node-picker";
-import type { rollbackHistoryFn } from "./hooks/use-rollback-history";
 
 const CloseButton: React.FC<{
   onClick: MouseEventHandler<HTMLButtonElement>;
@@ -52,11 +48,9 @@ const CloseButton: React.FC<{
 );
 
 type DevToolsExpandedProps = {
-  rollbackHistory: rollbackHistoryFn;
+  //
 };
-export default function DevToolsExpanded({
-  rollbackHistory,
-}: DevToolsExpandedProps) {
+export default function DevToolsExpanded(props: DevToolsExpandedProps) {
   const [isOpen, setIsOpen] = useAtom(devToolsOpenedAtom);
   const defaultSize = useAtomValue(devToolsSizeAtom);
   const [tabIndex, setTabIndex] = useAtom(devToolTabIndexAtom);
@@ -69,27 +63,19 @@ export default function DevToolsExpanded({
     setIsOpen(!isOpen);
   }, [isOpen]);
 
-  const renderTab = React.useCallback(
-    ({ index }: { index: string }) => {
-      switch (index) {
-        case "state":
-          return <StateTab />;
-        case "history":
-          return <HistoryTab rollbackHistory={rollbackHistory} />;
-        case "plugins":
-          return <PluginsTab />;
-        case "schema":
-          return <SchemaTab />;
-        case "structure":
-          return <StructureTab />;
-        case "snapshots":
-          return <SnapshotsTab />;
-        default:
-          return <StateTab />;
-      }
-    },
-    [rollbackHistory]
-  );
+  const renderTab = React.useCallback(({ index }: { index: string }) => {
+    switch (index) {
+      case "state":
+        return <StateTab />;
+      case "plugins":
+        return <PluginsTab />;
+      case "schema":
+        return <SchemaTab />;
+      case "structure":
+      default:
+        return <StructureTab />;
+    }
+  }, []);
 
   const renderDockContent = React.useCallback(() => {
     return (
@@ -109,16 +95,13 @@ export default function DevToolsExpanded({
           onClick={nodePickerAPI.activate}
           isActive={nodePicker.active}
         />
-        <SaveSnapshotButton />
 
         <Tabs onSelect={setTabIndex} selectedIndex={tabIndex}>
           <TabList>
+            <Tab index="structure">Structure</Tab>
             <Tab index="state">State</Tab>
-            <Tab index="history">History</Tab>
             <Tab index="plugins">Plugins</Tab>
             <Tab index="schema">Schema</Tab>
-            <Tab index="structure">Structure</Tab>
-            <Tab index="snapshots">Snapshots</Tab>
           </TabList>
 
           <TabPanel>{renderTab}</TabPanel>

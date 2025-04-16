@@ -228,7 +228,7 @@ export function BlockNode(props: {
           </Side>
         )}
         <StartSide>
-          {node.type.name} {marks}
+          {getNodeName(node)} {marks}
         </StartSide>
         <Side
           tooltip={`Pos: ${startPos} (after ${node.type.name} opening tag)`}
@@ -337,4 +337,11 @@ function getMarksText(node: Node) {
     : node.marks.length > 1
     ? ` - [${node.marks.length} marks]`
     : "";
+}
+
+function getNodeName(node: Node) {
+  if (node.type.name === "warp") {
+    return node.attrs.blockType;
+  }
+  return node.type.name;
 }

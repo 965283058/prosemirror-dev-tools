@@ -1,0 +1,22 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.logNodeFromJSON = void 0;
+var _findNode = require("./find-node");
+var logNodeFromJSON = exports.logNodeFromJSON = function logNodeFromJSON(state) {
+  return function (_ref) {
+    var doc = _ref.doc,
+      node = _ref.node;
+    var fullDoc = state.doc;
+    var path = (0, _findNode.findNodeJSON)([], doc, node);
+    if (path) {
+      console.log(path.reduce(function (node, pathItem) {
+        return node[pathItem];
+      }, fullDoc.toJSON()));
+    } else {
+      console.log(node);
+    }
+  };
+};

@@ -3,7 +3,6 @@ import type { EditorView } from "prosemirror-view";
 import React from "react";
 import { editorStateAtom } from "../state/editor-state";
 import { editorViewAtom } from "../state/editor-view";
-import { historyWriteAtom } from "../state/history";
 import subscribeOnUpdates from "../utils/subscribe-on-updates";
 
 export function useSubscribeToEditorView(
@@ -11,7 +10,6 @@ export function useSubscribeToEditorView(
   diffWorkerInstance?: Worker
 ) {
   const setEditorView = useSetAtom(editorViewAtom);
-  const historyDispatcher = useSetAtom(historyWriteAtom);
   const setEditorState = useSetAtom(editorStateAtom);
   const diffWorker = diffWorkerInstance
     ? import("../state/json-diff-worker").then(
@@ -28,20 +26,20 @@ export function useSubscribeToEditorView(
     // store editor view reference
     setEditorView(editorView);
 
-    historyDispatcher({ type: "reset", payload: { state: editorView.state } });
+    // historyDispatcher({ type: "reset", payload: { state: editorView.state } });
 
     subscribeOnUpdates(editorView, (tr, oldState, newState) => {
       setEditorState(newState);
 
-      historyDispatcher({
-        type: "update",
-        payload: {
-          oldState,
-          newState,
-          tr,
-          diffWorker,
-        },
-      });
+      // historyDispatcher({
+      //   type: "update",
+      //   payload: {
+      //     oldState,
+      //     newState,
+      //     tr,
+      //     diffWorker,
+      //   },
+      // });
     });
   }, [editorView, diffWorker]);
 }

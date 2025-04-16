@@ -1,0 +1,9 @@
+import React, { MouseEventHandler } from "react";
+import "@compiled/react";
+declare function NodePicker(): JSX.Element;
+declare const NodePickerTrigger: React.FC<{
+    onClick: MouseEventHandler<HTMLButtonElement>;
+    isActive: boolean;
+    children?: React.ReactNode;
+}>;
+export { NodePicker, NodePickerTrigger };
